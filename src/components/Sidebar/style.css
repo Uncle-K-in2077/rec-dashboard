@@ -1,0 +1,18 @@
+.sidebar-active,
+.sidebar-active svg {
+  background-color: var(--bg-color) !important;
+  font-weight: bold !important;
+  color: white !important;
+}
+
+.sidebar-bottom {
+  opacity: 0; /* Mặc định ẩn đi */
+  position: fixed;
+  bottom: 0;
+  white-space: normal;
+  transition: opacity 2s;
+}
+
+.sidebar-visible {
+  opacity: 1;
+}

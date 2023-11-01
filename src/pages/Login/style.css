@@ -1,0 +1,20 @@
+.form-login {
+  width: 100%;
+  max-width: 450px;
+  padding: 15px;
+  margin: auto;
+  padding: 10px;
+}
+
+.login-form_input {
+  width: 100% !important;
+}
+
+.login-form_paper {
+  padding: 60px;
+  border-radius: 20px;
+}
+
+.login-form_paper button {
+  width: 100%;
+}
