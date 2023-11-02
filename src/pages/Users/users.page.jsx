@@ -8,9 +8,8 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import "./style.css";
 import { Pagination, TextField } from "@mui/material";
-import CraeteButton from "../../components/Buttons/CreateButton";
-import EditButton from "./../../components/Buttons/EditButton";
-import DeleteButton from "./../../components/Buttons/DeleteButton";
+import CreateButton from "../../components/Buttons/CreateButton";
+import MenuButton from "../../components/Buttons/MenuButton";
 function UsersPage() {
   const [page, setPage] = React.useState(1);
   const handleChange = (event, value) => {
@@ -45,7 +44,7 @@ function UsersPage() {
             className="users-controller_button col-md-3"
             style={{ textAlign: "right" }}
           >
-            <CraeteButton />
+            <CreateButton createUrl={"/dashboard/users/create"} />
           </div>
         </div>
       </div>
@@ -199,12 +198,9 @@ function UserTableData() {
                         </TableCell>
                       );
                     })}
-                    <TableCell key="actions" align="left" colSpan={2}>
-                      <EditButton />
-                      <DeleteButton />
+                    <TableCell key="actions" align="left">
+                      <MenuButton />
                     </TableCell>
-                    {/* <TableCell key="actions" align="left">
-                    </TableCell> */}
                   </TableRow>
                 );
               })}
