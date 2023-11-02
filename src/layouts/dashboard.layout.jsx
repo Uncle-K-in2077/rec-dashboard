@@ -63,7 +63,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 // eslint-disable-next-line react/prop-types
 export default function DashboardLayout({ children }) {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);

@@ -1,9 +1,10 @@
 import { Routes, Route } from "react-router-dom";
-import IndexPage from "../../pages/index/index.page";
 import DashboardLayout from "./../../layouts/dashboard.layout";
 import RolesPage from "../../pages/Roles/Roles.page";
 import UsersPage from "../../pages/Users/users.page";
 import CreateUserPage from "../../pages/Users/createUser.page";
+import IndexPage from "../../pages/Index/index.page";
+import CreateRolePage from "../../pages/Roles/CreateRole.page";
 
 function DashboardRouter() {
   return (
@@ -11,6 +12,8 @@ function DashboardRouter() {
       <Routes>
         <Route path="/users/create" element={<CreateUserPage />} />
         <Route path="/users" element={<UsersPage />} />
+
+        <Route path="/roles/create" element={<CreateRolePage />} />
         <Route path="/roles" element={<RolesPage />} />
 
         <Route path="/index" element={<IndexPage />} />

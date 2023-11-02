@@ -6,9 +6,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button } from "@mui/material";
-import EditButton from "./../../components/Buttons/EditButton";
-import DeleteButton from "./../../components/Buttons/DeleteButton";
+import MenuButton from "../../components/Buttons/MenuButton";
+import { Pagination, TextField } from "@mui/material";
+import CreateButton from "../../components/Buttons/CreateButton";
 
 function createData(name, created_at, updated_at) {
   return { name, created_at, updated_at };
@@ -27,37 +27,91 @@ const rows = [
   createData("Designer", "2023-01-10 21:00:00", "2023-01-10 21:00:00"),
 ];
 
-export default function BasicTable() {
+export default function RolePage() {
+  const [page, setPage] = React.useState(1);
+  const handleChange = (event, value) => {
+    setPage(value);
+  };
+
+  const handleSearchRole = (e) => {
+    e.preventDefault();
+    alert("Search role...");
+  };
+
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <div className="role-page">
+      <div className="users-controller">
+        <div
+          className="row m-1"
+          style={{
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <div className="users-controller_searcher col-md-5">
+            <form onSubmit={handleSearchRole}>
+              <TextField
+                label="Search..."
+                variant="standard"
+                style={{ width: "100%" }}
+              />
+            </form>
+          </div>
+          <div
+            className="users-controller_button col-md-3"
+            style={{ textAlign: "right" }}
+          >
+            <CreateButton createUrl={"/dashboard/roles/create"} />
+          </div>
+        </div>
+      </div>
+      <RoleTableData data={rows} />
+      <div className="pagination">
+        <Pagination
+          count={10}
+          page={page}
+          onChange={handleChange}
+          color="primary"
+        />
+      </div>
+    </div>
+  );
+}
+
+const RoleTableData = ({ data }) => {
+  return (
+    <TableContainer
+      component={Paper}
+      sx={{ maxHeight: "60vh", marginTop: "20px" }}
+    >
+      <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="right">created_at</TableCell>
-            <TableCell align="right">Updated_at</TableCell>
-            <TableCell align="right">Edit</TableCell>
+            <TableCell align="left">created_at</TableCell>
+            <TableCell align="left">Updated_at</TableCell>
+            <TableCell align="left"></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.created_at}</TableCell>
-              <TableCell align="right">{row.updated_at}</TableCell>
-              <TableCell align="right">
-                <EditButton />
-                <DeleteButton />
-              </TableCell>
-            </TableRow>
-          ))}
+          {data &&
+            data.map((row) => (
+              <TableRow
+                key={row.name}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.name}
+                </TableCell>
+                <TableCell align="left">{row.created_at}</TableCell>
+                <TableCell align="left">{row.updated_at}</TableCell>
+                <TableCell align="left">
+                  <MenuButton />
+                </TableCell>
+              </TableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
   );
-}
+};
