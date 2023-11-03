@@ -1,0 +1,8 @@
+.permission-group{
+    border: 1px solid rgb(190, 184, 184);
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+.permission-name{
+    font-size: 20px;
+}

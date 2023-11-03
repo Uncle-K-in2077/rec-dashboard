@@ -6,9 +6,8 @@ export const login = createAsyncThunk(
   async ({ email, password, navigate }, thunkAPI) => {
     try {
       const data = await AuthService.login({ email, password });
-      console.log(data);
       if (data) {
-        // localStorage.setItem("token", data);
+        localStorage.setItem("access_token", data.data.access_token);
         navigate("/dashboard/index");
       }
       return data;
@@ -17,6 +16,15 @@ export const login = createAsyncThunk(
     }
   }
 );
+export const logout = createAsyncThunk("auth/logout", async (thunkAPI) => {
+  try {
+    await AuthService.logout();
+    localStorage.removeItem("access_token");
+    window.location.href = "/auth/login";
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.message);
+  }
+});
 
 const authSlice = createSlice({
   name: "authentication",
@@ -39,7 +47,21 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = false;
       state.isAuthentication = true;
-      state.info = action.payload;
+      state.info = action.payload.data;
+    });
+    builder.addCase(logout.pending, (state) => {
+      state.loading = true;
+      state.error = false;
+    });
+    builder.addCase(logout.rejected, (state) => {
+      state.loading = false;
+      state.error = true;
+    });
+    builder.addCase(logout.fulfilled, (state) => {
+      state.loading = false;
+      state.error = false;
+      state.isAuthentication = false;
+      state.info = null;
     });
   },
 });
