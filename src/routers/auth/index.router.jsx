@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import LoginPage from "../../pages/login/login.page";
 import AuthLayout from "./../../layouts/auth.layout";
+import LoginPage from "../../pages/Login/login.page";
 
 function AuthRouter() {
   return (

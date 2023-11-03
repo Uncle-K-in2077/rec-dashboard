@@ -14,9 +14,7 @@ function LoginPage() {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    // dispatch(login({ email, password, navigate }));
-
-    navigate("/dashboard/index")
+    dispatch(login({ email, password, navigate }));
   };
 
   // Create onChange handlers for email and password inputs

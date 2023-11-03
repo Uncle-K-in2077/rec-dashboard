@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 class AxiosService {
   constructor() {
@@ -16,6 +17,10 @@ class AxiosService {
 
   async put({ url, data }) {
     return this.sendRequest({ method: "put", url, data });
+  }
+
+  async patch({ url, data }) {
+    return this.sendRequest({ method: "patch", url, data });
   }
 
   async delete({ url }) {
@@ -67,6 +72,8 @@ class AxiosService {
         error.response.data &&
         error.response.data.message
       ) {
+        toast.error(error.response.data.message || "Something wrong...");
+
         throw new Error(error.response.data.message);
       } else {
         throw error;
@@ -84,12 +91,14 @@ class AxiosService {
           ? error.response.data.message
           : "An error occurred";
 
+      toast.error(errorMessage);
       throw new Error(errorMessage);
     } else if (error.request) {
       console.error("Request Error:", error.request);
     } else {
       console.error("Error:", error.message);
     }
+    throw new Error(error);
   }
 
   handleRequestError(error) {

@@ -3,9 +3,10 @@ import * as React from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import { useState } from "react";
 
 export default function MenuButton({ onEdit, onRemove }) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,18 +27,12 @@ export default function MenuButton({ onEdit, onRemove }) {
         <LinearScaleIcon />
       </Button>
       <Menu
-        id="demo-positioned-menu"
-        aria-labelledby="demo-positioned-button"
+        id="basic-menu"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
         }}
       >
         <MenuItem onClick={handleClose}>Edit</MenuItem>
