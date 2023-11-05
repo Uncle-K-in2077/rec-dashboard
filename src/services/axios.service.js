@@ -5,26 +5,27 @@ class AxiosService {
   constructor() {
     this.initializeHttpClient();
     this.setupRequestInterceptor();
+    this.setupResponseInterceptor();
   }
 
-  async get({ url, params }) {
-    return this.sendRequest({ method: "get", url, params });
+  async get({ url, params, headers }) {
+    return this.sendRequest({ method: "get", url, params, headers });
   }
 
-  async post({ url, data }) {
-    return this.sendRequest({ method: "post", url, data });
+  async post({ url, data, headers }) {
+    return this.sendRequest({ method: "post", url, data, headers });
   }
 
-  async put({ url, data }) {
-    return this.sendRequest({ method: "put", url, data });
+  async put({ url, data, headers }) {
+    return this.sendRequest({ method: "put", url, data, headers });
   }
 
-  async patch({ url, data }) {
-    return this.sendRequest({ method: "patch", url, data });
+  async patch({ url, data, headers }) {
+    return this.sendRequest({ method: "patch", url, data, headers });
   }
 
-  async delete({ url }) {
-    return this.sendRequest({ method: "delete", url });
+  async delete({ url, headers }) {
+    return this.sendRequest({ method: "delete", url, headers });
   }
 
   initializeHttpClient() {
@@ -63,6 +64,12 @@ class AxiosService {
   }
 
   async sendRequest(config) {
+    const defaultHeaders = { "Content-Type": "application/json" };
+    config.headers = {
+      ...defaultHeaders,
+      ...config.headers,
+    };
+
     try {
       const response = await this.httpClient(config);
       return response.data;
@@ -73,7 +80,6 @@ class AxiosService {
         error.response.data.message
       ) {
         toast.error(error.response.data.message || "Something wrong...");
-
         throw new Error(error.response.data.message);
       } else {
         throw error;
@@ -102,6 +108,8 @@ class AxiosService {
   }
 
   handleRequestError(error) {
+    toast.error(error.message);
+
     if (error.response) {
       console.error("Response Error:", error.response.data);
       console.error("Status Code:", error.response.status);

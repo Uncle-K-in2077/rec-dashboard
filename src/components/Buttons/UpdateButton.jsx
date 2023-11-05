@@ -8,7 +8,7 @@ function UpdateButton(props) {
       onClick={props.onClick}
       {...props}
     >
-      Update
+      {props.label || "Update"}
     </Button>
   );
 }

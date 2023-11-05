@@ -10,7 +10,7 @@ function CreateRolePage() {
   };
 
   return (
-    <div className="create-role-page" style={{ minHeight: "80vh" }}>
+    <div className="create-role-page">
       <div className="container">
         <div className="role-name">
           <Form>

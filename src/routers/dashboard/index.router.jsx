@@ -12,6 +12,7 @@ function DashboardRouter() {
     <AuthProvider>
       <DashboardLayout>
         <Routes>
+          <Route path="/users/:id" element={<CreateUserPage />} />
           <Route path="/users/create" element={<CreateUserPage />} />
           <Route path="/users" element={<UsersPage />} />
 
