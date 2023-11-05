@@ -4,8 +4,9 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
-export default function MenuButton({ onEdit, onRemove }) {
+export default function MenuButton({ onEdit, onRemove, detailUrl }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -35,7 +36,9 @@ export default function MenuButton({ onEdit, onRemove }) {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleClose}>Edit</MenuItem>
+        <Link to={detailUrl}>
+          <MenuItem onClick={handleClose}>Edit</MenuItem>
+        </Link>
         <MenuItem onClick={handleClose}>Remove</MenuItem>
       </Menu>
     </div>

@@ -27,4 +27,6 @@ th {
   margin-top: 20px !important;
 }
 
-
+.main-container{
+  min-height: 85vh;
+}

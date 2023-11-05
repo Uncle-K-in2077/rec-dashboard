@@ -1,4 +1,3 @@
-import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
@@ -17,8 +16,9 @@ const VisuallyHiddenInput = styled("input")({
 
 const UploadFileButton = ({ label, setFile, ...rest }) => {
   const handleFileChange = (event) => {
-    if (setFile) {
-      setFile(event.target.files);
+    const selectedFile = event.target.files[0];
+    if (setFile && selectedFile) {
+      setFile(selectedFile);
     }
   };
 
@@ -30,7 +30,11 @@ const UploadFileButton = ({ label, setFile, ...rest }) => {
       {...rest}
     >
       {label || "Button"}
-      <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+      <VisuallyHiddenInput
+        type="file"
+        onChange={handleFileChange}
+        accept=".png, .jpg, .jpeg"
+      />
     </Button>
   );
 };

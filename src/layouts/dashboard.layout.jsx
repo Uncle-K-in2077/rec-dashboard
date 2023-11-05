@@ -120,7 +120,7 @@ export default function DashboardLayout({ children }) {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
-        <Paper className="p-4">{children}</Paper>
+        <Paper className="p-4 main-container">{children}</Paper>
       </Main>
     </Box>
   );

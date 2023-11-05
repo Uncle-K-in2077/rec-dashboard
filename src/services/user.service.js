@@ -1,10 +1,18 @@
 import { toast } from "react-toastify";
 import AxiosService from "./axios.service";
+import { mutate } from "swr";
+import { SWR_KEY } from "../constants/SWR_KEY";
 
 const UserSerivce = {
-  getAll: async () => {
+  getAll: async ({ page = 1, limit = 20 }) => {
     const rs = await AxiosService.post({
       url: "/users",
+      data: {
+        pagination: {
+          per_page: Number(limit),
+          current_page: Number(page),
+        },
+      },
     });
 
     return rs;
@@ -22,16 +30,25 @@ const UserSerivce = {
     const rs = await AxiosService.post({
       url: `/users/create`,
       data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
+    mutate(SWR_KEY.GET_ALL_USERS);
     toast.success("Create user successfully!");
     return rs;
   },
 
-  update: async (id, data) => {
+  update: async ({ id, data }) => {
     const rs = await AxiosService.patch({
       url: `/users/update/${id}`,
       data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
+    mutate(SWR_KEY.GET_ALL_USERS);
+
     toast.success("Update user successfully!");
 
     return rs;
@@ -42,6 +59,7 @@ const UserSerivce = {
       data,
     });
     toast.success("Delete user successfully!");
+    mutate(SWR_KEY.GET_ALL_USERS);
 
     return rs;
   },

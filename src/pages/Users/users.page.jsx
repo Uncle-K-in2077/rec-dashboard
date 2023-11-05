@@ -1,4 +1,3 @@
-import * as React from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,22 +6,31 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import "./style.css";
-import { Pagination, TextField } from "@mui/material";
+import { Avatar, Pagination, TextField } from "@mui/material";
 import CreateButton from "../../components/Buttons/CreateButton";
 import MenuButton from "../../components/Buttons/MenuButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
-import UserSerivce from "../../services/users.service";
+import UserSerivce from "../../services/user.service";
 import { SWR_KEY } from "../../constants/SWR_KEY";
 import Spinners from "../../components/Loading/Spinners";
 
 function UsersPage() {
-  const fetcher = async () => {
-    return await UserSerivce.getAll();
-  };
-  const { data } = useSWR(SWR_KEY.GET_ALL_USERS, fetcher);
+  const [page, setPage] = useState(1);
+  const limit = 20;
 
-  const [page, setPage] = React.useState(1);
+  const handleGetUsers = async () => {
+    return await UserSerivce.getAll({ page, limit });
+  };
+
+  const { data, mutate, isLoading } = useSWR(
+    SWR_KEY.GET_ALL_USERS,
+    handleGetUsers
+  );
+
+  useEffect(() => {
+    mutate();
+  }, [mutate, page]);
 
   const handleChange = (event, value) => {
     setPage(value);
@@ -60,10 +68,10 @@ function UsersPage() {
           </div>
         </div>
       </div>
-      <UserTableData data={data} />
+      <UserTableData data={data} isLoading={isLoading} />
       <div className="pagination">
         <Pagination
-          count={10}
+          count={data?.meta?.last_page}
           page={page}
           onChange={handleChange}
           color="primary"
@@ -74,7 +82,7 @@ function UsersPage() {
 }
 
 const columns = [
-  { id: "avatar", label: "Avatar" },
+  { id: "avatar_path", label: "Avatar" },
   { id: "full_name", label: "Full name" },
   { id: "id_card", label: "Card id" },
   { id: "birthday", label: "Birthday" },
@@ -82,22 +90,11 @@ const columns = [
   { id: "email", label: "Email" },
   { id: "phone", label: "Phone" },
   { id: "address  ", label: "Address" },
-  { id: "user_status", label: "status" },
+  { id: "user_status", label: "Status" },
 ];
 
-function UserTableData({ data }) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-
+// eslint-disable-next-line react/prop-types
+function UserTableData({ data, isLoading }) {
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
       <TableContainer sx={{ maxHeight: "60vh" }}>
@@ -113,28 +110,56 @@ function UserTableData({ data }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data && data.data ? (
-              data.data
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => {
-                  return (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                      {columns.map((column) => {
-                        const value = row[column.id];
+            {data &&
+              data.data &&
+              data.data.map((row) => {
+                return (
+                  <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    {columns.map((column) => {
+                      const value = row[column.id];
+                      if (column.id === "avatar_path") {
                         return (
                           <TableCell key={column.id} align="left">
-                            {value}
+                            <Avatar
+                              src={value}
+                              alt={row.last_name}
+                              sx={{ bgcolor: "#1976d2" }}
+                            />
                           </TableCell>
                         );
-                      })}
-                      <TableCell key="actions" align="left">
-                        <MenuButton />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-            ) : (
-              <Spinners />
+                      }
+                      if (column.id === "user_status") {
+                        return (
+                          <TableCell key={column.id} align="left">
+                            {value && value.name}
+                          </TableCell>
+                        );
+                      }
+                      if (column.id === "gender") {
+                        return (
+                          <TableCell key={column.id} align="left">
+                            {value && value.name}
+                          </TableCell>
+                        );
+                      }
+                      return (
+                        <TableCell key={column.id} align="left">
+                          {value}
+                        </TableCell>
+                      );
+                    })}
+                    <TableCell key="actions" align="left">
+                      <MenuButton detailUrl={`/dashboard/users/${row.id}`} />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            {isLoading && (
+              <TableRow>
+                <TableCell>
+                  <Spinners />
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>
