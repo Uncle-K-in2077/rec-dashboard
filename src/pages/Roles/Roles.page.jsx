@@ -13,6 +13,7 @@ import { RoleService } from "../../services/role.service";
 import useSWR from "swr";
 import { SWR_KEY } from "../../constants/SWR_KEY";
 import { useEffect } from "react";
+import { DateUtil } from "../../utils/date.util";
 
 export default function RolePage() {
   const [page, setPage] = React.useState(1);
@@ -107,11 +108,13 @@ const RoleTableData = ({ data }) => {
                 key={row.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
+                <TableCell align="left">{row.id}</TableCell>
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="left">{row.created_at}</TableCell>
-                <TableCell align="left">{row.updated_at}</TableCell>
+                <TableCell align="left">
+                  {DateUtil.toString(row.updated_at)}
+                </TableCell>
                 <TableCell align="left">
                   <MenuButton />
                 </TableCell>
