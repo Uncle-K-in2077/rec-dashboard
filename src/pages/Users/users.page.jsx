@@ -28,12 +28,9 @@ function UsersPage() {
     handleGetUsers
   );
 
-  useEffect(() => {
+  const handleChange = async (event, value) => {
+    await setPage(value);
     mutate();
-  }, [mutate, page]);
-
-  const handleChange = (event, value) => {
-    setPage(value);
   };
 
   const handleSearchUser = (e) => {
