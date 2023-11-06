@@ -41,6 +41,27 @@ export default function Sidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
+          {/* Khai - 06-10 */}
+          <Link to={"/dashboard/feedbacks"}>
+            <ListItem disablePadding>
+              <ListItemButton className={isActive("/dashboard/feedbacks")}>
+                <ListItemIcon>
+                  <DraftsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Feedbacks" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link to={"/dashboard/real_estates"}>
+            <ListItem disablePadding>
+              <ListItemButton className={isActive("/dashboard/real_estates")}>
+                <ListItemIcon>
+                  <DraftsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Real_Estates" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
         </List>
       </nav>
     </Box>
