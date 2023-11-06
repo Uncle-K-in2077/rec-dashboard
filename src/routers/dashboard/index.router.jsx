@@ -6,6 +6,8 @@ import CreateUserPage from "../../pages/Users/createUser.page";
 import IndexPage from "../../pages/Index/index.page";
 import CreateRolePage from "../../pages/Roles/CreateRole.page";
 import AuthProvider from "../../components/AuthProvider/AuthProvider";
+import FeedBackPage from "../../pages/FeedBack/feedbacks.page";
+import CreateFeedBackPage from "../../pages/FeedBack/createFeedback.page";
 
 function DashboardRouter() {
   return (
@@ -18,6 +20,10 @@ function DashboardRouter() {
 
           <Route path="/roles/create" element={<CreateRolePage />} />
           <Route path="/roles" element={<RolesPage />} />
+
+          <Route path="/feedbacks" element={<FeedBackPage />} />
+          <Route path="/feedbacks/:id" element={<CreateFeedBackPage />} />
+          <Route path="/feedbacks/create" element={<CreateFeedBackPage />} />
 
           <Route path="/index" element={<IndexPage />} />
           <Route path="/" element={<IndexPage />} />

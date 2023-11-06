@@ -41,6 +41,16 @@ export default function Sidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
+          <Link to={"/dashboard/feedbacks"}>
+            <ListItem disablePadding>
+              <ListItemButton className={isActive("/dashboard/feedbacks")}>
+                <ListItemIcon>
+                  <DraftsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Feed Back" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
         </List>
       </nav>
     </Box>

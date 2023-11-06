@@ -59,7 +59,7 @@ function CreateUserPage() {
     if (id) {
       const getCurentUser = async () => {
         const rs = await UserSerivce.getById(id);
-        setUser(rs);
+        (rs); setUser
       };
       getCurentUser();
     }
