@@ -4,11 +4,82 @@ import Row from "react-bootstrap/Row";
 import UpdateButton from "../../components/Buttons/UpdateButton";
 import { Divider, FormControlLabel, Switch } from "@mui/material";
 import "./style.css";
+import useSWR from "swr";
+import { SWR_KEY } from "../../constants/SWR_KEY";
+import { PermissionService } from "../../services/permission.service";
+import Spinners from "../../components/Loading/Spinners";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import CreateButton from "../../components/Buttons/CreateButton";
+import { toast } from "react-toastify";
+import { RoleService } from "../../services/role.service";
+import CancelButton from "../../components/Buttons/CancelButton";
 function CreateRolePage() {
-  const handleChangeSwitch = (id) => {
-    alert("handleChangeSwitch" + id);
+  const { id } = useParams();
+
+  const [role, setRole] = useState({
+    name: "",
+    list_permission: [],
+  });
+
+  const { data, isLoading } = useSWR(
+    SWR_KEY.GET_ALL_PERMISSION,
+    PermissionService.getAll
+  );
+
+  const handleChangeSwitch = (id, e) => {
+    const permission_id = id;
+    const checked = e.target.checked;
+
+    setRole((prevRole) => {
+      let updatedPermissions;
+      if (checked) {
+        updatedPermissions = [...prevRole.list_permission, permission_id];
+      } else {
+        updatedPermissions = prevRole.list_permission.filter(
+          (permission) => permission !== permission_id
+        );
+      }
+
+      return {
+        ...prevRole,
+        list_permission: updatedPermissions,
+      };
+    });
   };
 
+  const handleCreate = async () => {
+    if (!role.name) {
+      toast.warn("Please enter role name !");
+    } else {
+      await RoleService.create(role);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!role.name) {
+      toast.warn("Please enter role name !");
+    } else {
+      await RoleService.update({
+        id,
+        data: role,
+      });
+    }
+  };
+  useEffect(() => {
+    if (id) {
+      const getCurentRole = async () => {
+        const rs = await RoleService.getById(id);
+        if (rs) {
+          setRole({
+            name: rs.name,
+            list_permission: rs.permissions?.map((item) => item.id),
+          });
+        }
+      };
+      getCurentRole();
+    }
+  }, [id]);
   return (
     <div className="create-role-page">
       <div className="container">
@@ -20,201 +91,109 @@ function CreateRolePage() {
               style={{ justifyContent: "flex-start" }}
               controlId="formPlaintextPassword"
             >
-              <Form.Label column sm="2">
-                Role name
+              <Form.Label column="true" sm="12" md="2" xl="2">
+                <h5>Role name</h5>
               </Form.Label>
-              <Col sm="7">
-                <Form.Control
-                  type="text"
-                  placeholder="Enter the role name..."
-                />
-              </Col>
-              <Col sm="2">
-                <UpdateButton />
-              </Col>
+              <div className="form-group col-sm-12 col-md-8 col-xl-8">
+                <div className="row">
+                  <Col column="true" sm="12" md="12" xl="8">
+                    <Form.Control
+                      value={role.name}
+                      onChange={(e) => {
+                        setRole({ ...role, name: e.target.value });
+                      }}
+                      type="text"
+                      placeholder="Enter the role name..."
+                    />
+                  </Col>
+                  <Col sm="12" md="12" xl="4">
+                    <div>
+                      {!id ? (
+                        <CreateButton onClick={handleCreate} />
+                      ) : (
+                        <UpdateButton onClick={handleUpdate} />
+                      )}
+                      <CancelButton cancelUrl={"/dashboard/roles"} />
+                    </div>
+                  </Col>
+                </div>
+              </div>
             </Form.Group>
           </Form>
         </div>
 
         <Divider className="my-3" />
 
-        <div className="role-permissions">
-          <div className="container col-8">
-            {role_api &&
-              Object.keys(role_api).map((groupName, index) => {
-                return (
-                  <div key={index} className="permission-group">
-                    <div
-                      className="row"
-                      style={{ justifyContent: "space-evenly" }}
-                    >
+        {!isLoading ? (
+          <div className="role-permissions">
+            <div className="container col-sm-12 col-md-9 col-xl-8">
+              {data &&
+                Object.keys(data).map((groupName, index) => {
+                  return (
+                    <div key={index} className="permission-group p-3">
                       <div
-                        className="permission-name col-md-4"
-                        style={{ textAlign: "right" }}
+                        className="row"
+                        style={{ justifyContent: "space-evenly" }}
                       >
-                        <p>{groupName}</p>
-                      </div>
-                      <div className="permission-switchs col-md-6">
-                        {role_api &&
-                          role_api[groupName] &&
-                          role_api[groupName].map((item, i) => {
-                            return (
-                              <div className="permission-item" key={i}>
-                                <FormControlLabel
-                                  onChange={() => {
-                                    handleChangeSwitch(item.id);
-                                  }}
-                                  control={<Switch defaultChecked />}
-                                  label={item.name}
-                                />
-                              </div>
-                            );
-                          })}
+                        <div
+                          className="permission-name col-md-4"
+                          style={{ textAlign: "right" }}
+                        >
+                          <p>{groupName}</p>
+                        </div>
+                        {!id ? (
+                          <div className="permission-switchs col-md-6">
+                            {data &&
+                              data[groupName] &&
+                              data[groupName].map((item, i) => {
+                                return (
+                                  <div className="permission-item" key={i}>
+                                    <FormControlLabel
+                                      onChange={(e) => {
+                                        handleChangeSwitch(item.id, e);
+                                      }}
+                                      control={<Switch />}
+                                      label={item.name}
+                                    />
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        ) : (
+                          <div className="permission-switchs col-md-6">
+                            {data &&
+                              role.list_permission &&
+                              data[groupName] &&
+                              data[groupName].map((item, i) => {
+                                const isChecked = Object.values(
+                                  role.list_permission
+                                ).some((permission) => permission === item.id);
+                                return (
+                                  <div className="permission-item" key={i}>
+                                    <FormControlLabel
+                                      onChange={(e) => {
+                                        handleChangeSwitch(item.id, e);
+                                      }}
+                                      control={<Switch checked={isChecked} />}
+                                      label={item.name}
+                                    />
+                                  </div>
+                                );
+                              })}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+            </div>
           </div>
-        </div>
+        ) : (
+          <Spinners />
+        )}
       </div>
     </div>
   );
 }
 
 export default CreateRolePage;
-
-const role_api = {
-  "Real Estates": [
-    {
-      id: 1,
-      name: "List Real Estates",
-      action: "admin.real_estates.index",
-    },
-    {
-      id: 2,
-      name: "Create Real Estate",
-      action: "admin.real_estates.create",
-    },
-    {
-      id: 3,
-      name: "Create Real Estate",
-      action: "admin.real_estates.edit",
-    },
-    {
-      id: 4,
-      name: "Create Real Estate",
-      action: "admin.real_estates.destroy",
-    },
-  ],
-  Roles: [
-    {
-      id: 5,
-      name: "List Roles",
-      action: "admin.roles.index",
-    },
-    {
-      id: 6,
-      name: "Create Role",
-      action: "admin.roles.create",
-    },
-    {
-      id: 7,
-      name: "Update Role",
-      action: "admin.roles.edit",
-    },
-    {
-      id: 8,
-      name: "Delete Role",
-      action: "admin.roles.destroy",
-    },
-  ],
-  Users: [
-    {
-      id: 9,
-      name: "List Users",
-      action: "admin.users.index",
-    },
-    {
-      id: 10,
-      name: "Create User",
-      action: "admin.users.create",
-    },
-    {
-      id: 11,
-      name: "Create User",
-      action: "admin.users.edit",
-    },
-    {
-      id: 12,
-      name: "Create User",
-      action: "admin.users.destroy",
-    },
-  ],
-  "User Statuses": [
-    {
-      id: 13,
-      name: "List User Statuses",
-      action: "admin.user_statuses.index",
-    },
-    {
-      id: 14,
-      name: "Create User Statuses",
-      action: "admin.user_statuses.create",
-    },
-    {
-      id: 15,
-      name: "Update User Statuses",
-      action: "admin.user_statuses.edit",
-    },
-    {
-      id: 16,
-      name: "Delete User Statuses",
-      action: "admin.user_statuses.destroy",
-    },
-  ],
-  Tasks: [
-    {
-      id: 17,
-      name: "List Tasks",
-      action: "admin.tasks.index",
-    },
-    {
-      id: 18,
-      name: "Create Task",
-      action: "admin.tasks.create",
-    },
-    {
-      id: 19,
-      name: "Update Task",
-      action: "admin.tasks.edit",
-    },
-    {
-      id: 20,
-      name: "Delete Task",
-      action: "admin.tasks.destroy",
-    },
-  ],
-  Pricings: [
-    {
-      id: 33,
-      name: "List Pricings",
-      action: "admin.pricings.index",
-    },
-    {
-      id: 34,
-      name: "Create Pricing",
-      action: "admin.pricings.create",
-    },
-    {
-      id: 35,
-      name: "Update Pricing",
-      action: "admin.pricings.edit",
-    },
-    {
-      id: 36,
-      name: "Delete Pricing",
-      action: "admin.pricings.destroy",
-    },
-  ],
-};
