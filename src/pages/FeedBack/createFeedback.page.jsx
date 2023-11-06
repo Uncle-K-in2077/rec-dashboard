@@ -8,19 +8,18 @@ import { useParams } from "react-router-dom";
 import CancelButton from "../../components/Buttons/CancelButton";
 import CreateButton from "../../components/Buttons/CreateButton";
 import UserSerivce from "../../services/user.service";
-
+import dayjs from "dayjs";
 function CreateFeedBackPage() {
     const { id } = useParams();
     const [page, setPage] = useState(1);
     const limit = 20;
-
     const [feedBack, setFeedback] = useState({
         email: "",
         phone: "",
         title: "",
         description: "",
-        date: null,
-        feedback_status_id: "",
+        date: dayjs(Date.now()),
+        feedback_status_id: null,
         report_type_id: 1,
     });
     const [isLoadingID, setIsLoadingID] = useState(false);
@@ -31,6 +30,10 @@ function CreateFeedBackPage() {
             [name]: value,
         }));
     };
+    const handleDateChange = (date) => {
+        setFeedback({ ...feedBack, date: date });
+    };
+
     useEffect(() => {
         if (id) {
             const getCurentFeedback = async () => {
@@ -58,11 +61,21 @@ function CreateFeedBackPage() {
         SWR_KEY.GET_ALL_USERS,
         handleGetUsers
     );
+    const handleCreate = async (e) => {
+        e.preventDefault();
+        const formatDate = dayjs(feedBack.date).format('YYYY-MM-DD HH:mm:ss');
+        const dataToCreate = { ...feedBack, date: formatDate };
+        try {
+            await FeedBackSerivce.create(dataToCreate);
+            console.log("data:", dataToCreate);
+        } catch (error) {
+            console.log("Error creating feedback :", error);
+        }
 
-    const handleCreate = async () => {
-        await FeedBackSerivce.create({ ...feedBack });
     }
-    console.log("ussers", users);
+
+
+
     return (
         <div className="create-role-page">
 
@@ -117,9 +130,9 @@ function CreateFeedBackPage() {
                                     <div className="form-group p-2 col-sm-12 col-md-6 col-xl-6">
                                         <DateChooser
                                             name="date"
-                                            value={feedBack.created_at}
                                             label={"Date"}
-                                            onChange={handleInputChange}
+                                            selectedDate={dayjs(feedBack.date)}
+                                            onDateChange={handleDateChange}
                                         />
                                     </div>
 
@@ -193,7 +206,7 @@ function CreateFeedBackPage() {
                                             <Select
                                                 labelId="demo-simple-select-autowidth-label"
                                                 id="demo-simple-select-autowidth"
-                                                name="feedback_status_id"
+                                                name="userId"
                                                 value={feedBack.user?.full_name}
                                                 autoWidth
                                                 label="User"
@@ -203,7 +216,7 @@ function CreateFeedBackPage() {
                                                     users.data.map((item, index) => {
                                                         return (
                                                             <MenuItem key={index} value={item.id}>
-                                                                {item.name}
+                                                                {item.full_name}
                                                             </MenuItem>
                                                         );
                                                     })
@@ -215,21 +228,14 @@ function CreateFeedBackPage() {
                                             </Select>
                                         </FormControl>
                                     </div>
-                                    {/* <div className="form-group p-2 col-sm-12 col-md-6 col-xl-6">
-                                        <TextField
-                                            required
-                                            name="user"
-                                            value={feedBack.user?.full_name}
-                                            label="User"
-                                            variant="outlined"
-                                            onChange={handleInputChange}
-                                        />
-                                    </div> */}
+
                                 </div>
                                 <div className="create-user-buttons m-1 mt-4">
                                     {id ? (
                                         <CancelButton cancelUrl={"/dashboard/feedbacks"} />) :
-                                        (<CreateButton onClick={handleCreate} />)
+                                        (<CreateButton onClick={(e) => {
+                                            handleCreate(e)
+                                        }} />)
                                     }
                                 </div>
                             </div>

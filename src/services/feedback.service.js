@@ -29,6 +29,7 @@ const FeedBackSerivce = {
         return rs;
     },
     create: async (data) => {
+        console.log("dataaaa : ", data);
         const rs = await AxiosService.post({
             url: `/feedback/create`,
             data,
@@ -41,12 +42,6 @@ const FeedBackSerivce = {
         return rs;
     },
 
-    // getReportType: async (id) => {
-    //     const rs = await AxiosService.get({
-    //         url: `/feedback/single/${id}`,
-    //     });
-    //     return rs;
-    // },
 };
 export default FeedBackSerivce;
 
