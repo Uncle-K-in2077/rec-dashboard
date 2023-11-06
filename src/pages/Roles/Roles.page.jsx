@@ -9,29 +9,28 @@ import Paper from "@mui/material/Paper";
 import MenuButton from "../../components/Buttons/MenuButton";
 import { Pagination, TextField } from "@mui/material";
 import CreateButton from "../../components/Buttons/CreateButton";
-
-function createData(name, created_at, updated_at) {
-  return { name, created_at, updated_at };
-}
-
-const rows = [
-  createData("Admin", "2023-01-01 12:00:00", "2023-01-01 12:00:00"),
-  createData("User", "2023-01-02 13:00:00", "2023-01-02 13:00:00"),
-  createData("Manager", "2023-01-03 14:00:00", "2023-01-03 14:00:00"),
-  createData("Guest", "2023-01-04 15:00:00", "2023-01-04 15:00:00"),
-  createData("Editor", "2023-01-05 16:00:00", "2023-01-05 16:00:00"),
-  createData("Moderator", "2023-01-06 17:00:00", "2023-01-06 17:00:00"),
-  createData("Supervisor", "2023-01-07 18:00:00", "2023-01-07 18:00:00"),
-  createData("Developer", "2023-01-08 19:00:00", "2023-01-08 19:00:00"),
-  createData("Tester", "2023-01-09 20:00:00", "2023-01-09 20:00:00"),
-  createData("Designer", "2023-01-10 21:00:00", "2023-01-10 21:00:00"),
-];
+import { RoleService } from "../../services/role.service";
+import useSWR from "swr";
+import { SWR_KEY } from "../../constants/SWR_KEY";
+import { useEffect } from "react";
+import { DateUtil } from "../../utils/date.util";
 
 export default function RolePage() {
   const [page, setPage] = React.useState(1);
+  const limit = 20;
   const handleChange = (event, value) => {
     setPage(value);
   };
+
+  const fetcher = async () => {
+    return await RoleService.getAll({ page, limit });
+  };
+
+  const { data, mutate } = useSWR(SWR_KEY.GET_ALL_ROLES, fetcher);
+
+  useEffect(() => {
+    mutate();
+  }, [mutate, page]);
 
   const handleSearchRole = (e) => {
     e.preventDefault();
@@ -65,10 +64,11 @@ export default function RolePage() {
           </div>
         </div>
       </div>
-      <RoleTableData data={rows} />
+
+      <RoleTableData data={data?.data || []} />
       <div className="pagination">
         <Pagination
-          count={10}
+          count={data?.meta?.last_page}
           page={page}
           onChange={handleChange}
           color="primary"
@@ -77,6 +77,12 @@ export default function RolePage() {
     </div>
   );
 }
+
+const columns = [
+  { id: "id", label: "ID" },
+  { id: "name", label: "Role name" },
+  { id: "created_at", label: "Created at" },
+];
 
 const RoleTableData = ({ data }) => {
   return (
@@ -87,10 +93,12 @@ const RoleTableData = ({ data }) => {
       <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky table">
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell align="left">created_at</TableCell>
-            <TableCell align="left">Updated_at</TableCell>
-            <TableCell align="left"></TableCell>
+            {columns.map((column) => (
+              <TableCell key={column.id} align="left">
+                {column.label}
+              </TableCell>
+            ))}
+            <TableCell key="actions" align="left" />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -100,13 +108,15 @@ const RoleTableData = ({ data }) => {
                 key={row.name}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
+                <TableCell align="left">{row.id}</TableCell>
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="left">{row.created_at}</TableCell>
-                <TableCell align="left">{row.updated_at}</TableCell>
                 <TableCell align="left">
-                  <MenuButton />
+                  {DateUtil.toString(row.updated_at)}
+                </TableCell>
+                <TableCell align="left">
+                  <MenuButton detailUrl={`/dashboard/roles/${row.id}`} />
                 </TableCell>
               </TableRow>
             ))}

@@ -41,6 +41,7 @@ export default function Sidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
+          {/* Khai - 06-10 */}
           <Link to={"/dashboard/feedbacks"}>
             <ListItem disablePadding>
               <ListItemButton className={isActive("/dashboard/feedbacks")}>
@@ -48,6 +49,16 @@ export default function Sidebar() {
                   <DraftsIcon />
                 </ListItemIcon>
                 <ListItemText primary="Feed Back" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
+          <Link to={"/dashboard/real_estates"}>
+            <ListItem disablePadding>
+              <ListItemButton className={isActive("/dashboard/real_estates")}>
+                <ListItemIcon>
+                  <DraftsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Real_Estates" />
               </ListItemButton>
             </ListItem>
           </Link>

@@ -2,10 +2,10 @@ import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
-function CancelButton({ onClick, cancelUrl }) {
+function CancelButton({ onClick, cancelUrl, fullWidth }) {
   return (
     <Link to={cancelUrl}>
-      <Button
+      <Button fullWidth={fullWidth}
         variant="outlined"
         color="error"
         onClick={onClick}
