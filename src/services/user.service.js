@@ -40,7 +40,7 @@ const UserSerivce = {
   },
 
   update: async ({ id, data }) => {
-    const rs = await AxiosService.patch({
+    const rs = await AxiosService.post({
       url: `/users/update/${id}`,
       data,
       headers: {
@@ -53,6 +53,22 @@ const UserSerivce = {
 
     return rs;
   },
+
+  changePassword: async ({ user, newPassword }) => {
+    const rs = await AxiosService.post({
+      url: `/users/update/${user.id}`,
+      data: { ...user, password: newPassword, gender: user.gender.id },
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    mutate(SWR_KEY.GET_ALL_USERS);
+
+    toast.success("Change password successfully!");
+
+    return rs;
+  },
+
   delete: async (id, data) => {
     const rs = await AxiosService.delete({
       url: `/users/delete/${id}`,

@@ -95,6 +95,46 @@ const columns = [
 
 // eslint-disable-next-line react/prop-types
 function UserTableData({ data, isLoading }) {
+  const columnInfo = {
+    avatar_path: {
+      label: "Avatar",
+      render: (value, row) => (
+        <TableCell key="avatar_path" align="left">
+          <Avatar src={value} alt={row.last_name} sx={{ bgcolor: "#1976d2" }} />
+        </TableCell>
+      ),
+    },
+    full_name: {
+      label: "Full name",
+      render: (value) => (
+        <TableCell component="th" scope="row" key="full_name" align="left">
+          {value}
+        </TableCell>
+      ),
+    },
+    id_card: { label: "Card id" },
+    birthday: { label: "Birthday" },
+    gender: {
+      label: "Gender",
+      render: (value) => (
+        <TableCell key="gender" align="left">
+          {value && value.name}
+        </TableCell>
+      ),
+    },
+    email: { label: "Email" },
+    phone: { label: "Phone" },
+    address: { label: "Address" },
+    user_status: {
+      label: "Status",
+      render: (value) => (
+        <TableCell key="user_status" align="left">
+          {value && value.name}
+        </TableCell>
+      ),
+    },
+  };
+
   return (
     <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
       <TableContainer sx={{ maxHeight: "60vh" }}>
@@ -117,30 +157,9 @@ function UserTableData({ data, isLoading }) {
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                     {columns.map((column) => {
                       const value = row[column.id];
-                      if (column.id === "avatar_path") {
-                        return (
-                          <TableCell key={column.id} align="left">
-                            <Avatar
-                              src={value}
-                              alt={row.last_name}
-                              sx={{ bgcolor: "#1976d2" }}
-                            />
-                          </TableCell>
-                        );
-                      }
-                      if (column.id === "user_status") {
-                        return (
-                          <TableCell key={column.id} align="left">
-                            {value && value.name}
-                          </TableCell>
-                        );
-                      }
-                      if (column.id === "gender") {
-                        return (
-                          <TableCell key={column.id} align="left">
-                            {value && value.name}
-                          </TableCell>
-                        );
+                      const columnDetails = columnInfo[column.id];
+                      if (columnDetails && columnDetails.render) {
+                        return columnDetails.render(value, row);
                       }
                       return (
                         <TableCell key={column.id} align="left">
