@@ -8,7 +8,6 @@ import CreateRolePage from "../../pages/Roles/CreateRole.page";
 import AuthProvider from "../../components/AuthProvider/AuthProvider";
 
 import FeedBackPage from "../../pages/FeedBack/feedbacks.page";
-import CreateFeedBackPage from "../../pages/FeedBack/createFeedback.page";
 
 import RealEstates from "../../pages/RealEstates/real_estates.page";
 import CreateRealEstate from "../../pages/RealEstates/CreateRealEstates.page";
@@ -32,7 +31,6 @@ function DashboardRouter() {
 
           <Route path="/feedbacks" element={<FeedBackPage />} />
           <Route path="/feedbacks/:id" element={<FeedBackDetailsPage />} />
-          <Route path="/feedbacks/create" element={<CreateFeedBackPage />} />
 
           <Route path="/real_estates" element={<RealEstates />} />
           <Route path="/real_estates/create" element={<CreateRealEstate />} />
