@@ -116,7 +116,7 @@ const RoleTableData = ({ data }) => {
                   {DateUtil.toString(row.updated_at)}
                 </TableCell>
                 <TableCell align="left">
-                  <MenuButton />
+                  <MenuButton detailUrl={`/dashboard/roles/${row.id}`} />
                 </TableCell>
               </TableRow>
             ))}

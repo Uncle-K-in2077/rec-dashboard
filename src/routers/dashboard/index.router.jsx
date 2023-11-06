@@ -10,7 +10,6 @@ import RealEstates from "../../pages/RealEstates/real_estates.page";
 import CreateRealEstate from "../../pages/RealEstates/CreateRealEstates.page";
 import SingleRealEstates from "../../pages/RealEstates/SingleRealEstates.page";
 
-
 function DashboardRouter() {
   return (
     <AuthProvider>
@@ -20,13 +19,13 @@ function DashboardRouter() {
           <Route path="/users/create" element={<CreateUserPage />} />
           <Route path="/users" element={<UsersPage />} />
 
+          <Route path="/roles/:id" element={<CreateRolePage />} />
           <Route path="/roles/create" element={<CreateRolePage />} />
           <Route path="/roles" element={<RolesPage />} />
 
           <Route path="/real_estates" element={<RealEstates />} />
           <Route path="/real_estates/create" element={<CreateRealEstate />} />
           <Route path="/real_estates/:id" element={<SingleRealEstates />} />
-
 
           <Route path="/index" element={<IndexPage />} />
           <Route path="/" element={<IndexPage />} />
