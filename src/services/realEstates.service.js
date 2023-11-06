@@ -3,12 +3,18 @@ import { toast } from "react-toastify";
 
 const RealEstatesService = {
     //getAll
-    getAll: async () => {
+    getAll: async ({ page = 1, limit = 10 }) => {
         const response = await axiosService.post({
             url: "/realEstates",
+            data: {
+                pagination: {
+                    per_page: Number(limit),
+                    current_page: Number(page),
+                },
+            }
         });
-        console.log("service", response.data);
-        return response.data;
+        console.log("service", response);
+        return response;
     },
     //getById
     getById: async (id) => {
