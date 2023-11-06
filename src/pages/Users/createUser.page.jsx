@@ -157,7 +157,7 @@ function CreateUserPage() {
     if (Object.keys(errors).length === 0) {
       await UserSerivce.update({
         id,
-        data: { ...user, file, gender: user.gender.id },
+        user: { ...user, file, gender: user.gender.id },
       });
     } else {
       toast.error(Object.values(errors).join(", "));
@@ -363,7 +363,7 @@ function CreateUserPage() {
                       onChange={(e) => {
                         setChangePassword({
                           ...changePassword,
-                          newPassword: e.target.value,
+                          newPassword: e.target.value.trim(),
                         });
                       }}
                     />
@@ -379,7 +379,7 @@ function CreateUserPage() {
                       onChange={(e) => {
                         setChangePassword({
                           ...changePassword,
-                          comfirmNewPassword: e.target.value,
+                          comfirmNewPassword: e.target.value.trim(),
                         });
                       }}
                     />

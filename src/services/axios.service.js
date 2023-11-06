@@ -1,5 +1,7 @@
-import axios from "axios";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 class AxiosService {
   constructor() {
@@ -57,7 +59,15 @@ class AxiosService {
     this.httpClient.interceptors.response.use(
       (response) => response,
       (error) => {
-        this.handleResponseError(error);
+        if (error.response) {
+          if (error.response.status === 401 || error.response.status === 403) {
+            this.handleUnauthenticated();
+          } else {
+            this.handleResponseError(error);
+          }
+        } else {
+          this.handleRequestError(error);
+        }
         return Promise.reject(error);
       }
     );
@@ -118,6 +128,10 @@ class AxiosService {
     } else {
       console.error("Error:", error.message);
     }
+  }
+
+  handleUnauthenticated() {
+    window.location.href = "/auth/login";
   }
 }
 
