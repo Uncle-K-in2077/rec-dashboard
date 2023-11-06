@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,28 +14,29 @@ import { SWR_KEY } from "../../constants/SWR_KEY";
 import useSWR from "swr";
 import { TextField } from "@mui/material";
 import CreateButton from "../../components/Buttons/CreateButton";
-import { toast } from "react-toastify";
 
 
 function RealEstates() {
 
-    const fectcher = async () => {
+    // For Filtering
+    const [searchQuery, setSearchQuery] = React.useState("");
+
+    const fetcher = async () => {
         return await RealEstatesService.getAll();
     };
-    const { data, mutate } = useSWR(SWR_KEY.GET_ALL_REAL_ESTATES, fectcher);
-    console.log("data ... ", data);
+    const { isLoading, data, mutate } = useSWR(SWR_KEY.GET_ALL_REAL_ESTATES, fetcher);
 
-    const handleRemove = (id) => {
+    const handleRemove = async (id) => {
         const confirmed = window.confirm("Bạn có chắc chắn muốn xóa mục này?");
         if (confirmed) {
-            RealEstatesService.delete(id);
-            // mutate(SWR_KEY.GET_ALL_REAL_ESTATES);
-            toast.warning("Please Reload for update :<");
-            toast.warning("I will fix it soon :>");
-            console.log(`Remove item with ID: ${id}`);
+            await RealEstatesService.delete(id);
+            mutate();
         }
     };
 
+    if (isLoading) {
+        return <Spinners />
+    }
     return (
         <div>
             <Paper>
@@ -47,15 +48,13 @@ function RealEstates() {
                     }}
                 >
                     <div className="col-md-5">
-                        <form
-                        // onSubmit={handleSearchRole}
-                        >
-                            <TextField
-                                label="Search..."
-                                variant="standard"
-                                style={{ width: "100%" }}
-                            />
-                        </form>
+                        <TextField
+                            label="Hien Tai Dang Search Bang Filter"
+                            variant="standard"
+                            style={{ width: "100%" }}
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
                     </div>
                     <div
                         className="col-md-3"
@@ -65,7 +64,7 @@ function RealEstates() {
                     </div>
                 </div>
                 <hr />
-                <RealEstatesDataTable data={data} handleRemove={handleRemove} />
+                <RealEstatesDataTable data={data} handleRemove={handleRemove} searchQuery={searchQuery} />
             </Paper>
         </div>
     )
@@ -83,7 +82,18 @@ const columns = [
     { id: "publish_at", label: "Publish Date" },
 ];
 
-function RealEstatesDataTable({ data, handleRemove }) {
+function RealEstatesDataTable({ data, handleRemove, searchQuery }) {
+
+    const filteredData = data
+        ? data.filter((row) => {
+            const normalizedSearchQuery = searchQuery.toLowerCase();
+            return (
+                row.title.toLowerCase().includes(normalizedSearchQuery) ||
+                row.location.toLowerCase().includes(normalizedSearchQuery)
+                // Thêm các điều kiện tìm kiếm khác ở đây
+            );
+        })
+        : [];
 
     return (
         <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
@@ -100,7 +110,7 @@ function RealEstatesDataTable({ data, handleRemove }) {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data && data.map((row) => (
+                        {filteredData.map((row) => (
                             <TableRow key={row.id}>
                                 {columns.map((column) => (
                                     <TableCell key={column.id} align="left">
@@ -108,7 +118,9 @@ function RealEstatesDataTable({ data, handleRemove }) {
                                     </TableCell>
                                 ))}
                                 <TableCell key="actions" align="left">
-                                    <MenuButton onRemove={() => handleRemove(row.id)} />
+                                    <MenuButton
+                                        onRemove={() => handleRemove(row.id)}
+                                        detailUrl={`/dashboard/real_estates/${row.id}`} />
                                 </TableCell>
                             </TableRow>
                         ))}
@@ -118,7 +130,5 @@ function RealEstatesDataTable({ data, handleRemove }) {
         </Paper>
     );
 }
-
-
 
 export default RealEstates;

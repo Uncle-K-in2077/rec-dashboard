@@ -13,9 +13,9 @@ const RealEstatesService = {
     //getById
     getById: async (id) => {
         const response = await axiosService.get({
-            url: `/realEstates/${id}`,
+            url: `/realEstates/single/${id}`,
         });
-        return response.data;
+        return response;
     },
     //create
     create: async (data) => {
@@ -29,7 +29,7 @@ const RealEstatesService = {
     //update
     update: async (id, data) => {
         const response = await axiosService.patch({
-            url: `/realEstates/${id}`,
+            url: `/realEstates/update/${id}`,
             data,
         });
         toast.success("Update real estate successfully!");
