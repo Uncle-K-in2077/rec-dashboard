@@ -48,7 +48,7 @@ export default function Sidebar() {
                 <ListItemIcon>
                   <DraftsIcon />
                 </ListItemIcon>
-                <ListItemText primary="Feedbacks" />
+                <ListItemText primary="Feed Back" />
               </ListItemButton>
             </ListItem>
           </Link>
