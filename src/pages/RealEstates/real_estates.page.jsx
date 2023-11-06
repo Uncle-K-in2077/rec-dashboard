@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -12,7 +12,7 @@ import MenuButton from "../../components/Buttons/MenuButton";
 import RealEstatesService from "../../services/realEstates.service";
 import { SWR_KEY } from "../../constants/SWR_KEY";
 import useSWR from "swr";
-import { TextField } from "@mui/material";
+import { TextField, Pagination } from "@mui/material";
 import CreateButton from "../../components/Buttons/CreateButton";
 
 
@@ -20,11 +20,19 @@ function RealEstates() {
 
     // For Filtering
     const [searchQuery, setSearchQuery] = React.useState("");
+    // For Pagination
+    const [page, setPage] = useState(1);
+    const limit = 10;
+    const FetcherPaginationRE = async () => {
+        return await RealEstatesService.getAll({ page, limit });
+    }
 
-    const fetcher = async () => {
-        return await RealEstatesService.getAll();
+    const { isLoading, data, mutate } = useSWR(SWR_KEY.GET_ALL_REAL_ESTATES, FetcherPaginationRE);
+
+    const handleChange = async (event, value) => {
+        await setPage(value);
+        mutate();
     };
-    const { isLoading, data, mutate } = useSWR(SWR_KEY.GET_ALL_REAL_ESTATES, fetcher);
 
     const handleRemove = async (id) => {
         const confirmed = window.confirm("Bạn có chắc chắn muốn xóa mục này?");
@@ -49,7 +57,7 @@ function RealEstates() {
                 >
                     <div className="col-md-5">
                         <TextField
-                            label="Hien Tai Dang Search Bang Filter"
+                            label="Search by Title and Location"
                             variant="standard"
                             style={{ width: "100%" }}
                             value={searchQuery}
@@ -64,7 +72,15 @@ function RealEstates() {
                     </div>
                 </div>
                 <hr />
-                <RealEstatesDataTable data={data} handleRemove={handleRemove} searchQuery={searchQuery} />
+                <RealEstatesDataTable data={data.data} handleRemove={handleRemove} searchQuery={searchQuery} />
+                <div className="pagination">
+                    <Pagination
+                        count={data?.meta?.last_page}
+                        page={page}
+                        onChange={handleChange}
+                        color="primary"
+                    />
+                </div>
             </Paper>
         </div>
     )
@@ -97,7 +113,7 @@ function RealEstatesDataTable({ data, handleRemove, searchQuery }) {
 
     return (
         <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
-            <TableContainer sx={{ height: "60vh" }}>
+            <TableContainer sx={{ height: "65vh" }}>
                 <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                         <TableRow>
