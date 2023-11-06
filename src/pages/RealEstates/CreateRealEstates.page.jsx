@@ -9,6 +9,8 @@ import "./style.css";
 
 import RealEstatesService from "../../services/realEstates.service";
 import dayjs from "dayjs";
+import CreateButton from "../../components/Buttons/CreateButton";
+import CancelButton from "../../components/Buttons/CancelButton";
 
 function CreateRealEstate() {
     const [realEstateData, setRealEstateData] = useState({
@@ -59,7 +61,7 @@ function CreateRealEstate() {
                             onSubmit={handleCreate}
                         >
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="title"
                                         label="Title"
@@ -69,8 +71,8 @@ function CreateRealEstate() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="id_ref"
                                         label="Reference ID"
@@ -80,8 +82,8 @@ function CreateRealEstate() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="price"
                                         label="Price"
@@ -92,8 +94,8 @@ function CreateRealEstate() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="price_display"
                                         label="Price Display"
@@ -103,8 +105,8 @@ function CreateRealEstate() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="url"
                                         label="URL"
@@ -114,8 +116,8 @@ function CreateRealEstate() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="domain"
                                         label="Domain"
@@ -125,19 +127,8 @@ function CreateRealEstate() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
-                                    <DateChooser
-                                        name="publish_at"
-                                        label="Publish Date"
-                                        selectedDate={dayjs(realEstateData.publish_at)}
-                                        onDateChange={handleDateChange}
-                                        fullWidth
-                                        required
-                                    />
-
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="publish_display"
                                         label="Publish Display"
@@ -147,8 +138,8 @@ function CreateRealEstate() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="location"
                                         label="Location"
@@ -158,18 +149,36 @@ function CreateRealEstate() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        type="submit"
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
+                                    <DateChooser
+                                        name="publish_at"
+                                        label="Publish Date"
+                                        selectedDate={dayjs(realEstateData.publish_at)}
+                                        onDateChange={handleDateChange}
                                         fullWidth
                                         required
+                                    />
+
+                                </div>
+                            </Grid>
+                            <hr />
+                            <Grid container spacing={2}>
+                                <div className="col-sm-12 col-md-12 col-xl-6 px-2 mt-3">
+                                    <CreateButton
+                                        fullWidth={true}
+                                        type="submit"
                                     >
-                                        Create Real Estate
-                                    </Button>
-                                </Grid>
+                                        Create New Real Estates
+                                    </CreateButton>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 px-2 mt-3">
+                                    <CancelButton
+                                        fullWidth={true}
+                                        cancelUrl={"/dashboard/real_estates"}
+                                    >
+                                    </CancelButton>
+                                </div>
                             </Grid>
                         </form>
                     </Paper>
