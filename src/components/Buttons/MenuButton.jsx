@@ -39,7 +39,12 @@ export default function MenuButton({ onEdit, onRemove, detailUrl }) {
         <Link to={detailUrl}>
           <MenuItem onClick={handleClose}>Edit</MenuItem>
         </Link>
-        <MenuItem onClick={handleClose}>Remove</MenuItem>
+        <MenuItem
+          onClick={() => {
+            onRemove();
+            handleClose();
+          }}
+        >Remove</MenuItem>
       </Menu>
     </div>
   );
