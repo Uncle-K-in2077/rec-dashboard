@@ -13,7 +13,6 @@ const RealEstatesService = {
                 },
             }
         });
-        console.log("service", response);
         return response;
     },
     //getById

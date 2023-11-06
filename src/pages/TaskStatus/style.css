@@ -1,0 +1,20 @@
+.task_status_list {
+    display: flex;
+}
+
+.task_status {
+    background-color: #cacaca;
+    padding: 15px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.task_status strong {
+    align-self: center;
+}
+
+.task_menu {
+    color: black !important;
+    background-color: none !important;
+}

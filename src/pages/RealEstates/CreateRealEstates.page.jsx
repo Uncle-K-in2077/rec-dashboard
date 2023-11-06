@@ -25,7 +25,6 @@ function CreateRealEstate() {
         location: "",
     });
 
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setRealEstateData({ ...realEstateData, [name]: value });
@@ -38,6 +37,7 @@ function CreateRealEstate() {
 
     const handleCreate = async (e) => {
         e.preventDefault();
+        console.log("click create");
         // Format publish_at theo dang YYYY-MM-DD HH:mm:ss
         const formattedPublishAt = realEstateData.publish_at.format('YYYY-MM-DD HH:mm:ss');
         const dataToCreate = { ...realEstateData, publish_at: formattedPublishAt };
@@ -165,13 +165,16 @@ function CreateRealEstate() {
                             <hr />
                             <Grid container spacing={2}>
                                 <div className="col-sm-12 col-md-12 col-xl-6 px-2 mt-3">
-                                    <CreateButton
+                                    <Button
                                         fullWidth={true}
                                         type="submit"
+                                        variant="contained"
+                                        color="success"
                                     >
-                                        Create New Real Estates
-                                    </CreateButton>
+                                        Create +
+                                    </Button>
                                 </div>
+
                                 <div className="col-sm-12 col-md-12 col-xl-6 px-2 mt-3">
                                     <CancelButton
                                         fullWidth={true}
