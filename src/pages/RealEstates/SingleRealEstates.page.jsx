@@ -11,10 +11,13 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import DateChooser from "../../components/Inputs/DateChooser";
 import UpdateButton from "../../components/Buttons/UpdateButton";
+import CancelButton from "../../components/Buttons/CancelButton";
 import dayjs from "dayjs";
+import { toast } from "react-toastify";
 
 function SingleRealEstates() {
     const { id } = useParams();
+    const [updating, setUpdating] = useState(false);
     const fetcher = async () => {
         return await RealEstatesService.getById(id);
     };
@@ -53,6 +56,24 @@ function SingleRealEstates() {
         });
     };
 
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        setUpdating(true);
+        const formattedPublishAt = dayjs(realEstateData.publish_at).format('YYYY-MM-DD HH:mm:ss');
+        const dataToUpdate = { ...realEstateData, publish_at: formattedPublishAt };
+
+        console.log("datatoupdate   >> ", dataToUpdate);
+        try {
+            await RealEstatesService.update(id, dataToUpdate);
+            mutate();
+        } catch (error) {
+            toast.error("Error while updating Real Estate");
+            throw error;
+        } finally {
+            setUpdating(false);
+        }
+    }
+
     if (isLoading) {
         return <Spinners />;
     }
@@ -62,12 +83,11 @@ function SingleRealEstates() {
                 <div className="create_RE_form">
                     <Paper className="p-3">
                         <h3>Name: {realEstateData.title}</h3>
-                        <hr />
-                        <form
-                        // onSubmit={handleCreate}
+                        <form className="mt-5"
+                            onSubmit={handleUpdate}
                         >
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="title"
                                         label="Title"
@@ -77,8 +97,8 @@ function SingleRealEstates() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="id_ref"
                                         label="Reference ID"
@@ -88,8 +108,8 @@ function SingleRealEstates() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="price"
                                         label="Price"
@@ -100,8 +120,8 @@ function SingleRealEstates() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="price_display"
                                         label="Price Display"
@@ -111,8 +131,8 @@ function SingleRealEstates() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="url"
                                         label="URL"
@@ -122,8 +142,8 @@ function SingleRealEstates() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="domain"
                                         label="Domain"
@@ -133,8 +153,8 @@ function SingleRealEstates() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="publish_display"
                                         label="Publish Display"
@@ -144,8 +164,8 @@ function SingleRealEstates() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <TextField
                                         name="location"
                                         label="Location"
@@ -155,8 +175,8 @@ function SingleRealEstates() {
                                         fullWidth
                                         required
                                     />
-                                </Grid>
-                                <Grid item xs={6}>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 p-2">
                                     <DateChooser
                                         name="publish_at"
                                         label="Publish Date"
@@ -166,29 +186,30 @@ function SingleRealEstates() {
                                         required
                                     />
 
-                                </Grid>
+                                </div>
+                                {updating && (
+                                    <div className="col-sm-12 col-md-12 col-xl-6 p-2">
+                                        <Spinners />
+                                    </div>
+                                )}
                             </Grid>
                             <hr />
                             <Grid container spacing={2}>
-                                <Grid item xs={6}>
-                                    <Button
-                                        variant="contained"
-                                        color="secondary"
-                                        type="reset"
-                                        fullWidth
-                                        required
-                                    >
-                                        Cancel
-                                    </Button>
-                                </Grid>
-                                <Grid item xs={6}>
+                                <div className="col-sm-12 col-md-12 col-xl-6 px-2 mt-3">
                                     <UpdateButton
                                         fullWidth
-                                        required
+                                        type="submit"
                                     >
                                         Update
                                     </UpdateButton>
-                                </Grid>
+                                </div>
+                                <div className="col-sm-12 col-md-12 col-xl-6 px-2 mt-3">
+                                    <CancelButton
+                                        fullWidth={true}
+                                        cancelUrl={"/dashboard/real_estates"}
+                                    >
+                                    </CancelButton>
+                                </div>
                             </Grid>
                         </form>
                     </Paper>
