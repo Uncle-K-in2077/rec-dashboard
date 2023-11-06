@@ -20,15 +20,21 @@ import { SWR_KEY } from "../../constants/SWR_KEY";
 import { UserStatusService } from "../../services/userStatus.service";
 import useSWR from "swr";
 import UpdateButton from "../../components/Buttons/UpdateButton";
+import { toast } from "react-toastify";
 
 function CreateUserPage() {
   const { id } = useParams();
   const [changePasswordMode, setChangePasswordMode] = useState(false);
+  const [defaultUser, setDefaultUser] = useState(null);
+  const [changePassword, setChangePassword] = useState({
+    newPassword: "",
+    comfirmNewPassword: "",
+  });
   const [user, setUser] = useState({
     first_name: "",
     last_name: "",
     id_card: "",
-    birthday: null,
+    birthday: new Date(),
     gender: 0,
     phone: "",
     address: "",
@@ -36,7 +42,6 @@ function CreateUserPage() {
     email: "",
     password: "",
   });
-
   const [file, setFile] = useState(null);
 
   const handleGetUserStatus = async () => {
@@ -60,22 +65,104 @@ function CreateUserPage() {
       const getCurentUser = async () => {
         const rs = await UserSerivce.getById(id);
         setUser(rs);
+        setDefaultUser(rs);
       };
       getCurentUser();
     }
   }, [id]);
 
+  useEffect(() => {
+    if (file) {
+      const imageURL = URL.createObjectURL(file);
+      setUser((prevUser) => ({
+        ...prevUser,
+        avatar_path: imageURL,
+      }));
+    }
+  }, [file]);
+
+  const handleChangePassword = async () => {
+    if (changePassword.comfirmNewPassword !== changePassword.newPassword) {
+      toast.warn("Passwords do not match");
+      return;
+    }
+    if (changePassword.comfirmNewPassword.length < 8) {
+      toast.warn("Password is too short");
+      return;
+    }
+    try {
+      await UserSerivce.changePassword({
+        user: defaultUser,
+        newPassword: changePassword.comfirmNewPassword,
+      });
+      setChangePasswordMode(false);
+    } catch (error) {
+      toast.error("An error occurred while changing the password.");
+    }
+  };
+
+  function validateUser(user, isCreating) {
+    const errors = {};
+
+    if (!user.first_name) {
+      errors.first_name = "First name is required";
+    }
+
+    if (!user.last_name) {
+      errors.last_name = "Last name is required";
+    }
+
+    if (!user.id_card) {
+      errors.id_card = "ID card is required";
+    }
+
+    if (!user.phone) {
+      errors.phone = "Phone number is required";
+    }
+
+    if (!user.address) {
+      errors.address = "Address is required";
+    }
+
+    if (!user.email) {
+      errors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(user.email)) {
+      errors.email = "Email is invalid";
+    }
+
+    if (!user.password && isCreating) {
+      errors.password = "Password is required";
+    }
+
+    if (isCreating && user.password !== user.confirm_password) {
+      errors.confirm_password = "Passwords do not match";
+    }
+
+    return errors;
+  }
+
   const handleCreate = async () => {
-    await UserSerivce.create({ ...user, file });
+    const errors = validateUser(user, true);
+
+    if (Object.keys(errors).length === 0) {
+      await UserSerivce.create({ ...user, file });
+    } else {
+      toast.error(Object.values(errors).join(", "));
+    }
   };
 
   const handleUpdate = async () => {
-    await UserSerivce.update({
-      id,
-      data: { ...user, file },
-    });
-  };
+    const errors = validateUser(user, false);
 
+    if (Object.keys(errors).length === 0) {
+      await UserSerivce.update({
+        id,
+        user: { ...user, file, gender: user.gender.id },
+      });
+    } else {
+      toast.error(Object.values(errors).join(", "));
+    }
+  };
   return (
     <div className="container mt-3">
       <div className="row">
@@ -138,10 +225,13 @@ function CreateUserPage() {
                 </div>
                 <div className="form-group p-2 col-sm-12 col-md-4 col-xl-4">
                   <DateChooser
+                    key={user.birthday}
                     name="birthday"
-                    value={user.birthday}
+                    selectedDate={user.birthday}
                     label={"Birthday"}
-                    onChange={handleInputChange}
+                    onDateChange={(date) => {
+                      setUser({ ...user, birthday: date });
+                    }}
                   />
                 </div>
               </div>
@@ -239,9 +329,10 @@ function CreateUserPage() {
         <div className="col-sm-12 col-md-4 col-xl-4">
           <div className="avatar-container">
             <Avatar
+              id="user-avatar"
               className="create-user-avatar"
-              alt="Remy Sharp"
-              src="https://scontent.fsgn2-11.fna.fbcdn.net/v/t39.30808-6/386075921_1527087921389478_3433649193143410273_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGi20pAMm4qeOfsQRvqk_Kyk86kkdu8gtuTzqSR27yC23DLp51GT_IdpGgvF8WjB4dCrQI4HZoj4yhm2se29mB8&_nc_ohc=ZASPobP1qdQAX-4GH6i&_nc_ht=scontent.fsgn2-11.fna&oh=00_AfCJxUk0JCKvRD17C1hHQ-J3RoCJLmWC4nc5TVbIr-MTLA&oe=6547ABCD"
+              alt=""
+              src={user.avatar_path}
             />
             <center className="m-1">
               <UploadFileButton label={"Upload avatar"} setFile={setFile} />
@@ -269,7 +360,12 @@ function CreateUserPage() {
                       label="Password"
                       variant="outlined"
                       type="password"
-                      onChange={handleInputChange}
+                      onChange={(e) => {
+                        setChangePassword({
+                          ...changePassword,
+                          newPassword: e.target.value.trim(),
+                        });
+                      }}
                     />
                   </div>
                   <div className="form-group p-2 ">
@@ -280,13 +376,16 @@ function CreateUserPage() {
                       label="Confirm password"
                       variant="outlined"
                       type="password"
-                      onChange={handleInputChange}
+                      onChange={(e) => {
+                        setChangePassword({
+                          ...changePassword,
+                          comfirmNewPassword: e.target.value.trim(),
+                        });
+                      }}
                     />
                   </div>
                   <div className="form-group p-2 ">
-                    <UpdateButton
-                      onClick={() => setChangePasswordMode(false)}
-                    />
+                    <UpdateButton onClick={handleChangePassword} />
 
                     <CancelButton
                       onClick={() => setChangePasswordMode(false)}
