@@ -1,13 +1,3 @@
-.create-user-form .MuiFormControl-root  {
+.create-user-form .MuiFormControl-root {
     width: 100% !important;
-}
-
-.create-user-avatar{
-    margin: 0 auto !important;
-    height: 180px !important;
-    width: 180px !important;
-}
-
-.user-update-password{
-    text-align: center;
 }
