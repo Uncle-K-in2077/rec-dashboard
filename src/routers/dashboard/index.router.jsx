@@ -40,6 +40,7 @@ function DashboardRouter() {
 
           <Route path="/index" element={<IndexPage />} />
           <Route path="/" element={<IndexPage />} />
+          <Route path="*" element={<h1>not found</h1>} />
         </Routes>
       </DashboardLayout>
     </AuthProvider>

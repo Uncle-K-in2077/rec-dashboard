@@ -18,9 +18,6 @@ import { DateUtil } from "../../utils/date.util";
 export default function RolePage() {
   const [page, setPage] = React.useState(1);
   const limit = 20;
-  const handleChange = (event, value) => {
-    setPage(value);
-  };
 
   const fetcher = async () => {
     return await RoleService.getAll({ page, limit });
@@ -28,9 +25,10 @@ export default function RolePage() {
 
   const { data, mutate } = useSWR(SWR_KEY.GET_ALL_ROLES, fetcher);
 
-  useEffect(() => {
+  const handleChange = async (event, value) => {
+    await setPage(value);
     mutate();
-  }, [mutate, page]);
+  };
 
   const handleSearchRole = (e) => {
     e.preventDefault();

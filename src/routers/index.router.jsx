@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import DashboardRouter from "./dashboard/index.router";
 import AuthRouter from "./auth/index.router";
 
@@ -7,6 +7,7 @@ function AppRouter() {
     <Routes>
       <Route path="/auth/*" element={<AuthRouter />} />
       <Route path="/dashboard/*" element={<DashboardRouter />} />
+      <Route path="/*" element={<Navigate to="/dashboard" />} />
     </Routes>
   );
 }
