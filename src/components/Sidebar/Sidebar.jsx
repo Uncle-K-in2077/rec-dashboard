@@ -62,6 +62,16 @@ export default function Sidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
+          <Link to={"/dashboard/lands"}>
+            <ListItem disablePadding>
+              <ListItemButton className={isActive("/dashboard/lands")}>
+                <ListItemIcon>
+                  <DraftsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Lands" />
+              </ListItemButton>
+            </ListItem>
+          </Link>
         </List>
       </nav>
     </Box>

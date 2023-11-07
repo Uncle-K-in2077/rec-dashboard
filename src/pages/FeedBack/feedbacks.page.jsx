@@ -52,11 +52,6 @@ function FeedBackPage() {
                             />
                         </form>
                     </div>
-                    <div
-                        className="users-controller_button col-md-3"
-                        style={{ textAlign: "right" }}
-                    >
-                    </div>
                 </div>
             </div>
             <FeedbackTableData data={data} isLoading={isLoading} />
@@ -75,50 +70,53 @@ function FeedBackPage() {
 
 const FeedbackTableData = ({ data, isLoading }) => {
     return (
-        <TableContainer
-            component={Paper}
-            sx={{ maxHeight: "60vh", marginTop: "20px" }}
-        >
-            {isLoading && (
-                <TableRow>
-                    <TableCell>
-                        <Spinners />
-                    </TableCell>
-                </TableRow>
-            )}
-            <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky table">
-                <TableHead>
+        <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
+            <TableContainer
+                component={Paper}
+                sx={{ maxHeight: "60vh", marginTop: "20px" }}
+            >
+
+                <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="left">title</TableCell>
+                            <TableCell align="left">email</TableCell>
+                            <TableCell align="left">user</TableCell>
+                            <TableCell align="left">date</TableCell>
+                            <TableCell align="left">report-type</TableCell>
+                            <TableCell align="left"></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data &&
+                            data.data.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                                >
+
+                                    <TableCell align="left">{row.title}</TableCell>
+                                    <TableCell align="left">{row.email}</TableCell>
+                                    <TableCell align="left">{row.user?.full_name}</TableCell>
+                                    <TableCell align="left">{row.date}</TableCell>
+                                    <TableCell align="left">{row.report_type?.name}</TableCell>
+                                    <TableCell align="left">
+                                        <MenuButton detailUrl={`/dashboard/feedbacks/${row.id}`} />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+
+                    </TableBody>
+                </Table>
+                {isLoading && (
                     <TableRow>
-                        <TableCell align="left">title</TableCell>
-                        <TableCell align="left">email</TableCell>
-                        <TableCell align="left">user</TableCell>
-                        <TableCell align="left">date</TableCell>
-                        <TableCell align="left">report-type</TableCell>
-                        <TableCell align="left"></TableCell>
+                        <TableCell>
+                            <Spinners />
+                        </TableCell>
                     </TableRow>
-                </TableHead>
-                <TableBody>
-                    {data &&
-                        data.data.map((row) => (
-                            <TableRow
-                                key={row.id}
-                                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                            >
-
-                                <TableCell align="left">{row.title}</TableCell>
-                                <TableCell align="left">{row.email}</TableCell>
-                                <TableCell align="left">{row.user?.full_name}</TableCell>
-                                <TableCell align="left">{row.date}</TableCell>
-                                <TableCell align="left">{row.report_type?.name}</TableCell>
-                                <TableCell align="left">
-                                    <MenuButton detailUrl={`/dashboard/feedbacks/${row.id}`} />
-                                </TableCell>
-                            </TableRow>
-                        ))}
-
-                </TableBody>
-            </Table>
-        </TableContainer>
+                )}
+            </TableContainer>
+        </Paper>
     );
 };
 

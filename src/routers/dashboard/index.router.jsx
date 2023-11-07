@@ -8,11 +8,13 @@ import CreateRolePage from "../../pages/Roles/CreateRole.page";
 import AuthProvider from "../../components/AuthProvider/AuthProvider";
 
 import FeedBackPage from "../../pages/FeedBack/feedbacks.page";
+import LandsPage from "../../pages/Lands/lands.page";
 
 import RealEstates from "../../pages/RealEstates/real_estates.page";
 import CreateRealEstate from "../../pages/RealEstates/CreateRealEstates.page";
 import SingleRealEstates from "../../pages/RealEstates/SingleRealEstates.page";
 import FeedBackDetailsPage from "../../pages/FeedBack/feedbackDetails.page";
+import CreateLand from "../../pages/Lands/createLand.page";
 
 
 function DashboardRouter() {
@@ -35,6 +37,10 @@ function DashboardRouter() {
           <Route path="/real_estates" element={<RealEstates />} />
           <Route path="/real_estates/create" element={<CreateRealEstate />} />
           <Route path="/real_estates/:id" element={<SingleRealEstates />} />
+
+          <Route path="/lands" element={<LandsPage />} />
+          <Route path="/lands/create" element={<CreateLand />} />
+          <Route path="/lands/:id" element={<CreateLand />} />
 
 
           <Route path="/index" element={<IndexPage />} />

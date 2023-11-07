@@ -14,7 +14,6 @@ import DialogSpinner from "../../components/Loading/DialogSpinner";
 function FeedBackDetailsPage() {
     const { id } = useParams();
     const [idFb, setIdFb] = useState(id);
-    console.log("idFb ", idFb);
     const handleGetFeedbackStatus = async () => {
         return await FeedBackSerivce.getListStatus();
     };
