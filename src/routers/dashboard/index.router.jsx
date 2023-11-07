@@ -13,8 +13,13 @@ import LandsPage from "../../pages/Lands/lands.page";
 import RealEstates from "../../pages/RealEstates/real_estates.page";
 import CreateRealEstate from "../../pages/RealEstates/CreateRealEstates.page";
 import SingleRealEstates from "../../pages/RealEstates/SingleRealEstates.page";
+
 import FeedBackDetailsPage from "../../pages/FeedBack/feedbackDetails.page";
 import CreateLand from "../../pages/Lands/createLand.page";
+
+
+import TaskPage from "../../pages/Task/Tasks.page";
+import TaskStatus from "../../pages/TaskStatus/TaskStatus.page";
 
 
 function DashboardRouter() {
@@ -42,6 +47,9 @@ function DashboardRouter() {
           <Route path="/lands/create" element={<CreateLand />} />
           <Route path="/lands/:id" element={<CreateLand />} />
 
+
+          <Route path="/task" element={<TaskPage />} />
+          <Route path="/task_status" element={<TaskStatus />} />
 
           <Route path="/index" element={<IndexPage />} />
           <Route path="/" element={<IndexPage />} />
