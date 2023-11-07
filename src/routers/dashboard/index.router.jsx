@@ -6,16 +6,21 @@ import CreateUserPage from "../../pages/Users/createUser.page";
 import IndexPage from "../../pages/Index/index.page";
 import CreateRolePage from "../../pages/Roles/CreateRole.page";
 import AuthProvider from "../../components/AuthProvider/AuthProvider";
- 
+
 import FeedBackPage from "../../pages/FeedBack/feedbacks.page";
-import CreateFeedBackPage from "../../pages/FeedBack/createFeedback.page";
+import LandsPage from "../../pages/Lands/lands.page";
 
 import RealEstates from "../../pages/RealEstates/real_estates.page";
 import CreateRealEstate from "../../pages/RealEstates/CreateRealEstates.page";
 import SingleRealEstates from "../../pages/RealEstates/SingleRealEstates.page";
 
+import FeedBackDetailsPage from "../../pages/FeedBack/feedbackDetails.page";
+import CreateLand from "../../pages/Lands/createLand.page";
+
+
 import TaskPage from "../../pages/Task/Tasks.page";
 import TaskStatus from "../../pages/TaskStatus/TaskStatus.page";
+
 
 function DashboardRouter() {
   return (
@@ -30,15 +35,18 @@ function DashboardRouter() {
           <Route path="/roles/create" element={<CreateRolePage />} />
           <Route path="/roles" element={<RolesPage />} />
 
- 
+
           <Route path="/feedbacks" element={<FeedBackPage />} />
-          <Route path="/feedbacks/:id" element={<CreateFeedBackPage />} />
-          <Route path="/feedbacks/create" element={<CreateFeedBackPage />} />
+          <Route path="/feedbacks/:id" element={<FeedBackDetailsPage />} />
 
           <Route path="/real_estates" element={<RealEstates />} />
           <Route path="/real_estates/create" element={<CreateRealEstate />} />
           <Route path="/real_estates/:id" element={<SingleRealEstates />} />
- 
+
+          <Route path="/lands" element={<LandsPage />} />
+          <Route path="/lands/create" element={<CreateLand />} />
+          <Route path="/lands/:id" element={<CreateLand />} />
+
 
           <Route path="/task" element={<TaskPage />} />
           <Route path="/task_status" element={<TaskStatus />} />

@@ -13,6 +13,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import MenuButton from "../../components/Buttons/MenuButton";
+import Spinners from "../../components/Loading/Spinners";
 
 
 function FeedBackPage() {
@@ -25,15 +26,13 @@ function FeedBackPage() {
         SWR_KEY.GET_ALL_FEEDBACK,
         handleGetFeedback
     );
-    const handleChange = (event, value) => {
-        setPage(value);
+    const handleChange = async (event, value) => {
+        await setPage(value);
+        mutate()
     };
+    const handleSearchFeedback = () => {
 
-    useEffect(() => {
-        mutate();
-    }, [mutate, page]);
-
-
+    }
     return (
         <div className="feedbacks-page">
             <div className="users-controller">
@@ -45,9 +44,7 @@ function FeedBackPage() {
                     }}
                 >
                     <div className="users-controller_searcher col-md-5">
-                        <form onSubmit={() => {
-
-                        }}>
+                        <form onSubmit={handleSearchFeedback}>
                             <TextField
                                 label="Search..."
                                 variant="standard"
@@ -55,18 +52,12 @@ function FeedBackPage() {
                             />
                         </form>
                     </div>
-                    <div
-                        className="users-controller_button col-md-3"
-                        style={{ textAlign: "right" }}
-                    >
-                        <CreateButton createUrl={`/dashboard/feedbacks/create`} />
-                    </div>
                 </div>
             </div>
-            <FeedbackTableData data={data?.data || []} />
+            <FeedbackTableData data={data} isLoading={isLoading} />
             <div className="pagination">
                 <Pagination
-                    count={10}
+                    count={data?.meta?.last_page}
                     page={page}
                     onChange={handleChange}
                     color="primary"
@@ -77,42 +68,55 @@ function FeedBackPage() {
 }
 
 
-const FeedbackTableData = ({ data }) => {
+const FeedbackTableData = ({ data, isLoading }) => {
     return (
-        <TableContainer
-            component={Paper}
-            sx={{ maxHeight: "60vh", marginTop: "20px" }}
-        >
-            <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky table">
-                <TableHead>
-                    <TableRow>
-                        <TableCell align="left">email</TableCell>
-                        <TableCell align="left">phone</TableCell>
-                        <TableCell align="left">title</TableCell>
-                        <TableCell align="left">date</TableCell>
-                        <TableCell align="left"></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {data &&
-                        data.map((row) => (
-                            <TableRow
-                                key={row.name}
-                                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                            >
+        <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
+            <TableContainer
+                component={Paper}
+                sx={{ maxHeight: "60vh", marginTop: "20px" }}
+            >
 
-                                <TableCell align="left">{row.email}</TableCell>
-                                <TableCell align="left">{row.phone}</TableCell>
-                                <TableCell align="left">{row.title}</TableCell>
-                                <TableCell align="left">{row.date}</TableCell>
-                                <TableCell align="left">
-                                    <MenuButton detailUrl={`/dashboard/feedbacks/${row.id}`} />
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                </TableBody>
-            </Table>
-        </TableContainer>
+                <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky table">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="left">title</TableCell>
+                            <TableCell align="left">email</TableCell>
+                            <TableCell align="left">user</TableCell>
+                            <TableCell align="left">date</TableCell>
+                            <TableCell align="left">report-type</TableCell>
+                            <TableCell align="left"></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {data &&
+                            data.data.map((row) => (
+                                <TableRow
+                                    key={row.id}
+                                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                                >
+
+                                    <TableCell align="left">{row.title}</TableCell>
+                                    <TableCell align="left">{row.email}</TableCell>
+                                    <TableCell align="left">{row.user?.full_name}</TableCell>
+                                    <TableCell align="left">{row.date}</TableCell>
+                                    <TableCell align="left">{row.report_type?.name}</TableCell>
+                                    <TableCell align="left">
+                                        <MenuButton detailUrl={`/dashboard/feedbacks/${row.id}`} />
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+
+                    </TableBody>
+                </Table>
+                {isLoading && (
+                    <TableRow>
+                        <TableCell>
+                            <Spinners />
+                        </TableCell>
+                    </TableRow>
+                )}
+            </TableContainer>
+        </Paper>
     );
 };
 
