@@ -3,13 +3,13 @@ import { toast } from "react-toastify";
 
 const TaskStatusService = {
     getAllTaskStatuses: async () => {
-        const response = await axiosService.get({
+        const response = await axiosService.post({
             url: "/taskStatuses",
         });
         return response;
     },
 
-    getTaskStatusById: async (id) => {
+    getDetailsStatus: async (id) => {
         const response = await axiosService.get({
             url: `/taskStatuses/single/${id}`,
         });

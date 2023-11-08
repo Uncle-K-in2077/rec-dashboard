@@ -1,32 +1,27 @@
-import { useState, useEffect } from "react";
-
-import LandsService from "../../services/lands.service";
+import { Button, Pagination, Paper, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from "@mui/material";
+import { Link } from "react-router-dom";
+import CreateButton from "../../components/Buttons/CreateButton";
+import PricingService from "../../services/pricing.service";
 import useSWR from "swr";
 import { SWR_KEY } from "../../constants/SWR_KEY";
-import { Pagination, TextField } from "@mui/material";
-import CreateButton from "../../components/Buttons/CreateButton";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import MenuButton from "../../components/Buttons/MenuButton";
+import { useState } from "react";
 import Spinners from "../../components/Loading/Spinners";
-import moment from 'moment'
+import { Table } from "react-bootstrap";
+import moment from "moment";
+import MenuButton from "../../components/Buttons/MenuButton";
 
-function LandsPage() {
+
+
+function PricingsPage() {
     const [page, setPage] = useState(1);
     const limit = 20;
     const [searchQuery, setSearchQuery] = useState("");
-
-    const handleGetLans = async () => {
-        return await LandsService.getAll({ page, limit });
-    };
+    const getPricing = async () => {
+        return await PricingService.getAll({ page, limit });
+    }
     const { data, mutate, isLoading } = useSWR(
-        SWR_KEY.GET_ALL_LANDS,
-        handleGetLans
+        SWR_KEY.GET_ALL_PRICINGS,
+        getPricing
     );
     const handleChange = async (event, value) => {
         await setPage(value);
@@ -35,15 +30,16 @@ function LandsPage() {
     const handleRemove = async (id) => {
         const confirmed = window.confirm("Bạn có chắc chắn muốn xóa mục này?");
         if (confirmed) {
-            await LandsService.delete(id);
+            await PricingService.delete(id);
             mutate();
         }
-    };
+    }
 
     return (
         <div className="lands-page">
             <Paper>
                 <div className="users-controller">
+                    <h3> Pricings </h3>
                     <div
                         className="row m-1"
                         style={{
@@ -66,15 +62,21 @@ function LandsPage() {
                         </div>
 
                         <div
-                            className="users-controller_button col-md-3"
+                            className="users-controller_button col-md-6"
                             style={{ textAlign: "right" }}
                         >
-                            <CreateButton createUrl={"/dashboard/lands/create"} />
+                            <CreateButton createUrl={"/dashboard/pricings/create"} />
+                            <Link to={"/dashboard/pricing-status"}>
+                                <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                >Pricing Status Page</Button>
+                            </Link>
                         </div>
                     </div>
                 </div>
 
-                <LandTable data={data} isLoading={isLoading} handleRemove={handleRemove} searchQuery={searchQuery} />
+                <PricingTable data={data} isLoading={isLoading} handleRemove={handleRemove} searchQuery={searchQuery} />
 
                 <div className="pagination">
                     <Pagination
@@ -88,10 +90,7 @@ function LandsPage() {
         </div>
     );
 }
-
-
-const LandTable = ({ data, isLoading, handleRemove, searchQuery }) => {
-
+const PricingTable = ({ data, isLoading, handleRemove, searchQuery }) => {
     let filteredData = [];
     if (Array.isArray(data?.data)) {
         const normalizedSearchQuery = searchQuery.toLowerCase();
@@ -100,9 +99,8 @@ const LandTable = ({ data, isLoading, handleRemove, searchQuery }) => {
         } else {
             filteredData = data.data.filter((row) => {
                 return (
-                    row.title.toLowerCase().includes(normalizedSearchQuery) ||
                     row.name.toLowerCase().includes(normalizedSearchQuery) ||
-                    row.phone.toLowerCase().includes(normalizedSearchQuery)
+                    row.original_price.toLowerCase().includes(normalizedSearchQuery)
                 );
             });
         }
@@ -120,33 +118,30 @@ const LandTable = ({ data, isLoading, handleRemove, searchQuery }) => {
                     </TableCell>
                 </TableRow>
             )}
-            <Table sx={{ minWidth: 650 }} stickyHeader aria-label="sticky table">
+            <Table sx={{ minWidth: 650 }} aria-label="sticky table">
                 <TableHead>
                     <TableRow>
-                        <TableCell align="left">title</TableCell>
                         <TableCell align="left">name</TableCell>
-                        <TableCell align="left">description</TableCell>
-                        <TableCell align="left">phone</TableCell>
-                        <TableCell align="left">created-at</TableCell>
+                        <TableCell align="left">origin price </TableCell>
+                        <TableCell align="left">sale price </TableCell>
+                        <TableCell align="left">status</TableCell>
+                        <TableCell align="left">createAt</TableCell>
                         <TableCell align="left"></TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
+
                     {filteredData.map((row) => (
-                        <TableRow
-                            key={row.id}
-                            sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                        >
-
-                            <TableCell align="left">{row.title}</TableCell>
-                            <TableCell align="left">{row.name}</TableCell>
-                            <TableCell align="left">{row.description}</TableCell>
-                            <TableCell align="left">{row.phone}</TableCell>
-                            <TableCell align="left">{moment(row.created_at).format('YYYY-MM-DD')}</TableCell>
-                            <TableCell align="left">
-                                <MenuButton detailUrl={`/dashboard/lands/${row.id}`}
+                        <TableRow key={row.id}>
+                            <TableCell>{row.name}</TableCell>
+                            <TableCell>{row.original_price}</TableCell>
+                            <TableCell>{row.sale_price}</TableCell>
+                            <TableCell>{row.pricing_status?.name}</TableCell>
+                            <TableCell>{moment(row.created_at).format('YYYY-MM-DD')}</TableCell>
+                            <TableCell>
+                                <MenuButton
                                     onRemove={() => handleRemove(row.id)}
-
+                                    detailUrl={`/dashboard/pricings/${row.id}`}
                                 />
                             </TableCell>
                         </TableRow>
@@ -158,6 +153,4 @@ const LandTable = ({ data, isLoading, handleRemove, searchQuery }) => {
 
     );
 };
-
-
-export default LandsPage;
+export default PricingsPage;

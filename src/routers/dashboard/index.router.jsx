@@ -20,6 +20,12 @@ import CreateLand from "../../pages/Lands/createLand.page";
 
 import TaskPage from "../../pages/Task/Tasks.page";
 import TaskStatus from "../../pages/TaskStatus/TaskStatus.page";
+import PricingsPage from "../../pages/Pricings/pricings.page";
+import PricingsStatusPage from "../../pages/PricingsStatus/pricingsStatus.page";
+import CreatePricingStatus from "../../pages/PricingsStatus/createPricingStaus.page";
+import CreatePricing from "../../pages/Pricings/createPricing.page";
+import CreateTasks from "../../pages/Task/createTask.page";
+import CreateStatusTask from "../../pages/TaskStatus/createStatus.page";
 
 
 function DashboardRouter() {
@@ -47,9 +53,22 @@ function DashboardRouter() {
           <Route path="/lands/create" element={<CreateLand />} />
           <Route path="/lands/:id" element={<CreateLand />} />
 
+          <Route path="/pricings" element={<PricingsPage />} />
+          <Route path="/pricings/:id" element={<CreatePricing />} />
+          <Route path="/pricings/create" element={<CreatePricing />} />
 
           <Route path="/task" element={<TaskPage />} />
+          <Route path="/task/:id" element={<CreateTasks />} />
+          <Route path="/task/create" element={<CreateTasks />} />
           <Route path="/task_status" element={<TaskStatus />} />
+          <Route path="/task_status/:id" element={<CreateStatusTask />} />
+          <Route path="/task_status/create" element={<CreateStatusTask />} />
+
+          <Route path="/pricing-status" element={<PricingsStatusPage />} />
+          <Route path="/pricing-status/:id" element={<CreatePricingStatus />} />
+          <Route path="/pricing-status/create" element={<CreatePricingStatus />} />
+
+
 
           <Route path="/index" element={<IndexPage />} />
           <Route path="/" element={<IndexPage />} />

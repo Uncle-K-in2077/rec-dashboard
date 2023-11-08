@@ -19,6 +19,8 @@ import Spinners from "../../components/Loading/Spinners";
 function FeedBackPage() {
     const [page, setPage] = useState(1);
     const limit = 20;
+    const [searchQuery, setSearchQuery] = useState("");
+
     const handleGetFeedback = async () => {
         return await FeedBackSerivce.getAll({ page, limit });
     };
@@ -49,12 +51,14 @@ function FeedBackPage() {
                                 label="Search..."
                                 variant="standard"
                                 style={{ width: "100%" }}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </form>
                     </div>
                 </div>
             </div>
-            <FeedbackTableData data={data} isLoading={isLoading} />
+            <FeedbackTableData data={data} isLoading={isLoading} searchQuery={searchQuery} />
             <div className="pagination">
                 <Pagination
                     count={data?.meta?.last_page}
@@ -68,7 +72,23 @@ function FeedBackPage() {
 }
 
 
-const FeedbackTableData = ({ data, isLoading }) => {
+const FeedbackTableData = ({ data, isLoading, searchQuery }) => {
+
+    let filteredData = [];
+    if (Array.isArray(data?.data)) {
+        const normalizedSearchQuery = searchQuery.toLowerCase();
+        if (normalizedSearchQuery === '') {
+            filteredData = data.data;
+        } else {
+            filteredData = data.data.filter((row) => {
+                return (
+                    row.title.toLowerCase().includes(normalizedSearchQuery)
+
+                );
+            });
+        }
+    }
+
     return (
         <Paper sx={{ width: "100%", overflow: "hidden", marginTop: "20px" }}>
             <TableContainer
@@ -88,8 +108,8 @@ const FeedbackTableData = ({ data, isLoading }) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {data &&
-                            data.data.map((row) => (
+                        {filteredData &&
+                            filteredData.map((row) => (
                                 <TableRow
                                     key={row.id}
                                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
