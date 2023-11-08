@@ -70,7 +70,9 @@ export default function Sidebar() {
                   <DraftsIcon />
                 </ListItemIcon>
                 <ListItemText primary="Lands" />
-
+              </ListItemButton>
+            </ListItem>
+          </Link>
           <Link to={"/dashboard/task"}>
             <ListItem disablePadding>
               <ListItemButton className={isActive("/dashboard/task")}>
@@ -82,6 +84,19 @@ export default function Sidebar() {
               </ListItemButton>
             </ListItem>
           </Link>
+
+          <Link to={"/dashboard/pricings"}>
+            <ListItem disablePadding>
+              <ListItemButton className={isActive("/dashboard/pricings")}>
+                <ListItemIcon>
+                  <DraftsIcon />
+                </ListItemIcon>
+                <ListItemText primary="Pricings" />
+
+              </ListItemButton>
+            </ListItem>
+          </Link>
+
         </List>
       </nav>
     </Box>

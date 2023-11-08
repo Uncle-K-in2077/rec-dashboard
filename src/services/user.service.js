@@ -20,7 +20,7 @@ const trimAll = (user) => {
 };
 
 const UserSerivce = {
-  getAll: async ({ page = 1, limit = 20 }) => {
+  getAll: async ({ page, limit }) => {
     const rs = await AxiosService.post({
       url: "/users",
       data: {
